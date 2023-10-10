@@ -1,0 +1,6 @@
+MINDlarge_train/
+MINDsmall_train/
+pinterest_iccv/
+*.csv
+TikTok-Api/
+*.npz
