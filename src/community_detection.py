@@ -5,9 +5,8 @@ import numpy as np
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 
-# df = pd.read_csv('user_shared_news.csv')
-# df = df.sample(5000)
-# print(df['User1'].nunique())
+# COMMUNITY DETECTION ON GRAPH (step 4)
+
 df = pd.read_csv('small_graph.csv')
 
 # # distribution of count
@@ -33,24 +32,24 @@ for _, row in df.iterrows():
 # plt.show()
 print('now community detection')
 
-# # compute the best partition
-# communities_generator = nx.community.louvain_communities(G)
-# partition = {node: i for i, comm in enumerate(communities_generator) for node in comm}
-# communities_list = [comm for comm in communities_generator]
+# compute the best partition
+communities_generator = nx.community.louvain_communities(G)
+partition = {node: i for i, comm in enumerate(communities_generator) for node in comm}
+communities_list = [comm for comm in communities_generator]
 
-# print(len(communities_list))
+print(len(communities_list))
 
 # modularity_score = nx.community.modularity(G, communities_list)
 # print("Modularity:", modularity_score)
 
-# # draw the graph
-# pos = nx.spring_layout(G)
-# # color the nodes according to their partition
-# cmap = cm.viridis 
-# nx.draw_networkx_nodes(G, pos, partition.keys(), node_size=10,
-#                        cmap=cmap, node_color=list(partition.values()))
-# nx.draw_networkx_edges(G, pos, alpha=0.5)
-# plt.show()
+# draw the graph
+pos = nx.spring_layout(G)
+# color the nodes according to their partition
+cmap = cm.viridis 
+nx.draw_networkx_nodes(G, pos, partition.keys(), node_size=10,
+                       cmap=cmap, node_color=list(partition.values()))
+nx.draw_networkx_edges(G, pos, alpha=0.5)
+plt.show()
 
 # print('done with louvain')
 
