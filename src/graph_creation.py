@@ -8,8 +8,9 @@ import csv
 # CREATE A GRAPH BASED ON MODULARITY (step 3)
 
 user_user_matrix = load_npz('data/jaccard_similarity.npz')
-
 non_zero_values = user_user_matrix.data
+
+print(len(non_zero_values))
 
 def graph_coverage(clipped_data):
 
@@ -27,23 +28,32 @@ def graph_coverage(clipped_data):
         print(f"Value: {value}, Normalized Frequency: {freq:.4f}, Actual Frequency: {count}")
 
     # Plot the bar chart
-    # plt.bar(unique_values, normalized_frequencies, edgecolor='black')
-    # plt.title('Normalized Frequencies of Unique Values')
-    # plt.xlabel('Value')
-    # plt.ylabel('Normalized Frequency')
-    # plt.show()
+    plt.bar(unique_values, normalized_frequencies, edgecolor='black')
+    plt.title('Normalized Frequencies of Unique Values')
+    plt.xlabel('Value')
+    plt.ylabel('Normalized Frequency')
+    plt.show()
 
-# graph_coverage(non_zero_values)
-
+graph_coverage(non_zero_values)
 
 def calc_modularity(threshold):
 
-    mask = non_zero_values >= threshold
+    mask = user_user_matrix.data >= threshold
+    # print(mask)
 
     filtered_rows, filtered_cols = user_user_matrix.nonzero()
+    # print(filtered_cols)
+    # print(filtered_rows)
+
     filtered_rows = filtered_rows[mask]
     filtered_cols = filtered_cols[mask]
     filtered_data = user_user_matrix.data[mask]
+    # print(filtered_data)
+    print(len(filtered_data))
+    print(len(non_zero_values))
+
+    percentage = len(filtered_data) / len(non_zero_values)
+    print(percentage)
 
     print(f'making graph with threshold {threshold}')
     # Create a graph from the filtered data
@@ -67,21 +77,23 @@ def calc_modularity(threshold):
 
     # return communities_list
 
-
     modularity_score = nx.community.modularity(G, communities_list)
     coverage, performance = nx.community.partition_quality(G, communities_list)
     # size = sum(1 for community in communities_list if len(community) < 50)
     # small_percentage = size / len(communities_list)
+    percentage = len(filtered_data) / len(non_zero_values)
 
     print("modularity:", modularity_score)
     print("coverage:", coverage)
     print("performance:", performance)
-    community_sizes = [len(community)/51281 for community in communities_list]
-    print(community_sizes)
-    print('total:', sum(community_sizes)/51281)
+    print("percentage", )
+
+    # community_sizes = [len(community)/51281 for community in communities_list]
+    # print(community_sizes)
+    # print('total:', sum(community_sizes)/51281)
     # print('size percentage:', small_percentage)
 
-    return modularity_score, coverage, performance
+    return modularity_score, coverage, performance, percentage
 
 mod = []
 cov = []
@@ -114,13 +126,13 @@ for i in thrs:
 plt.plot(thrs, mod, label='y = modularity', color='blue')
 plt.plot(thrs, cov, label='y = coverage', color='red')
 plt.plot(thrs, perf, label='y = performance', color='green')
-# plt.plot(thrs, perc, label='y = percentage of communities (< 50)', color='orange')
+plt.plot(thrs, perc, label='y = percentage of users', color='orange')
 
-# plt.title("Threshold vs Metrics")
-# plt.xlabel("threshold")
-# plt.legend()
+plt.title("Threshold vs Metrics")
+plt.xlabel("threshold")
+plt.legend()
 
-# plt.show()
+plt.show()
 
 # pos = nx.spring_layout(G)  # Use spring layout for positioning
 # nx.draw(G, pos, with_labels=True, node_size=500, node_color="skyblue", font_size=10, width=0.5)

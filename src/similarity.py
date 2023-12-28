@@ -4,6 +4,8 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
+# CREATE A SIMILARITY MATRIX BASED ON MODULARITY (step 2.5)
+
 behaviors_matrix = load_npz('data/pv_behaviors.npz')
 
 pv_behaviors = pd.DataFrame.sparse.from_spmatrix(behaviors_matrix)
@@ -12,7 +14,7 @@ print(pv_behaviors.shape)
 
 ############ PCA ####################
 
-
+'''
 # from sklearn.decomposition import PCA
 from sklearn.decomposition import TruncatedSVD
 
@@ -61,7 +63,7 @@ plt.show()
 # print(f"Number of components for 99% variance: {n_components_99}")
 # # print(user_id_code_df_pca.shape)
 
-
+'''
 ######### DISTANCE FUNCTIONS ###########
 
 def pairwise_distance(A, B, p=2):
@@ -79,10 +81,23 @@ def pairwise_distance(A, B, p=2):
     return np.linalg.norm(a-b, axis=-1, ord=p)
 
 # ##### Compute the dot product for jaccard index ########
-'''
+
+# pv_behaviors = df = pd.DataFrame({
+#     'A': [1, 0, 1, 0, 0, 1],
+#     'B': [0, 0, 1, 0, 1, 0],
+#     'C': [0, 1, 0, 0, 0, 1],
+#     'D': [0, 0, 0, 1, 0, 0],
+#     'E': [0, 0, 0, 0, 1, 0]
+# })
+total = pv_behaviors.size
 sparse_matrix = csr_matrix(pv_behaviors)
-print(sparse_matrix.shape)
+print(sparse_matrix.shape) # (50000, 7713)
 user_user_matrix = sparse_matrix.dot(sparse_matrix.T)
-# print(user_user_matrix.shape) = (50000, 50000)
-save_npz('jaccard_similarity.npz', user_user_matrix)
-'''
+print(user_user_matrix)
+print(user_user_matrix.shape) #(50000, 50000)
+
+print((user_user_matrix >=2).sum().sum() / total) # number of cells greater than 2 = 10740118 (0.0042960472)
+print((user_user_matrix >=1).sum().sum() / total) # 134309530 (0.053723812)
+
+
+# save_npz('jaccard_similarity.npz', user_user_matrix)
